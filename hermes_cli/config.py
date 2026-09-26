@@ -1528,8 +1528,16 @@ def _merge_partial_save(raw: dict, override: dict) -> dict:
     """Merge *override* over *raw* for partial ``save_config`` writes.
     Omitted top-level sections are preserved; shared dict sections deep-merge so one nested key
     can change without dropping siblings on disk. Key REMOVALS are not supported here —
-    migrations go through ``_persist_migration`` with a full ``read_raw_config()`` dict."""
-    result = copy.deepcopy(override)
+    migrations go through ``_persist_migration`` with a full ``read_raw_config()`` dict.
+
+    The in-memory ``override`` is stripped of schema-default values FIRST: a long-lived process
+    (gateway/serve) loads a config where a key the user set on disk (e.g. ``memory.provider``)
+    is still at its schema default (``''``) in memory, and a raw deep-merge would let that
+    stale default clobber the on-disk value on the process's next partial save. Stripping the
+    defaults means only genuine non-default in-memory changes survive the merge, so an on-disk
+    non-default value is never reverted by a process that never saw it. (Default-valued keys
+    are not user-set — the same principle ``_strip_default_values`` applies on write.)"""
+    result = _strip_default_values(copy.deepcopy(override), DEFAULT_CONFIG)
     for key, value in raw.items():
         if key not in result:
             result[key] = copy.deepcopy(value)
