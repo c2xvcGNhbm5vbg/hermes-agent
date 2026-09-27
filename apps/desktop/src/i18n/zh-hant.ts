@@ -896,7 +896,8 @@ export const zhHant = defineLocale({
         userProfileEnabled: '使用者設定檔',
         memoryCharLimit: '記憶預算',
         userCharLimit: '設定檔預算',
-        provider: '記憶提供方'
+        provider: '記憶提供方',
+        prefetchIncludeLastAgentMessage: '將上一則回覆納入記憶搜尋'
       },
       context: {
         engine: '上下文引擎'
@@ -968,7 +969,9 @@ export const zhHant = defineLocale({
       },
       memory: {
         memoryEnabled: '儲存有助於未來工作階段的持久記憶。',
-        userProfileEnabled: '維護一份精簡的使用者偏好設定檔。'
+        userProfileEnabled: '維護一份精簡的使用者偏好設定檔。',
+        prefetchIncludeLastAgentMessage:
+          '開啟後，模型的上一次回覆會被加入記憶檢索查詢，使「實作那個」等簡短後續問題也能找到相關記憶。預設關閉。'
       },
       context: {
         engine: '長對話接近上下文上限時的管理策略。'

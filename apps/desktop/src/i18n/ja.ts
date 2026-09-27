@@ -948,7 +948,8 @@ export const ja = defineLocale({
         userProfileEnabled: 'ユーザープロファイル',
         memoryCharLimit: 'メモリ予算',
         userCharLimit: 'プロファイル予算',
-        provider: 'メモリプロバイダー'
+        provider: 'メモリプロバイダー',
+        prefetchIncludeLastAgentMessage: '直前の返信をメモリ検索に含める'
       },
       context: {
         engine: 'コンテキストエンジン'
@@ -1017,7 +1018,9 @@ export const ja = defineLocale({
       },
       memory: {
         memoryEnabled: '将来のセッションに役立つ永続メモリを保存します。',
-        userProfileEnabled: 'ユーザーの好みをまとめた簡潔なプロファイルを維持します。'
+        userProfileEnabled: 'ユーザーの好みをまとめた簡潔なプロファイルを維持します。',
+        prefetchIncludeLastAgentMessage:
+          'オンにすると、モデルの直前の返信がメモリ検索クエリに追加され、「それを実装して」のような短い続行でも関連するメモリが見つかります。デフォルトではオフ。'
       },
       context: {
         engine: '長い会話がコンテキスト上限に近づいたときの管理戦略です。'

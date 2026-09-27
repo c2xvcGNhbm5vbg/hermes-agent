@@ -553,7 +553,8 @@ export const FIELD_LABELS: Record<string, string> = defineFieldCopy({
     userProfileEnabled: 'User Profile',
     memoryCharLimit: 'Memory Budget',
     userCharLimit: 'Profile Budget',
-    provider: 'Memory Provider'
+    provider: 'Memory Provider',
+    prefetchIncludeLastAgentMessage: 'Include last reply in memory search'
   },
   context: {
     engine: 'Context Engine'
@@ -631,7 +632,9 @@ export const FIELD_DESCRIPTIONS: Record<string, string> = defineFieldCopy({
   },
   memory: {
     memoryEnabled: 'Save durable memories that can help future sessions.',
-    userProfileEnabled: 'Maintain a compact profile of user preferences.'
+    userProfileEnabled: 'Maintain a compact profile of user preferences.',
+    prefetchIncludeLastAgentMessage:
+      "When on, the model's previous reply is added to the memory recall query, so short follow-ups like \"implement that\" still find relevant memories. Off by default."
   },
   context: {
     engine: 'Strategy for managing long conversations near the context limit.'
@@ -748,6 +751,7 @@ export const SECTIONS: DesktopConfigSection[] = [
       'memory.memory_char_limit',
       'memory.user_char_limit',
       'memory.provider',
+      'memory.prefetch_include_last_agent_message',
       'context.engine',
       'compression.enabled',
       'compression.threshold',

@@ -875,6 +875,7 @@ export const ar = defineLocale({
       'memory.memoryCharLimit': 'ميزانية الذاكرة',
       'memory.userCharLimit': 'ميزانية الملف الشخصي',
       'memory.provider': 'مزود الذاكرة',
+      'memory.prefetchIncludeLastAgentMessage': 'تضمين الرد الأخير في بحث الذاكرة',
       'context.engine': 'محرك السياق',
       'compression.enabled': 'الضغط التلقائي',
       'compression.threshold': 'عتبة الضغط',
@@ -914,6 +915,8 @@ export const ar = defineLocale({
       'checkpoints.enabled': 'ينشئ لقطات رجوع قبل تعديلات الملفات.',
       'memory.memoryEnabled': 'يحفظ ذكريات دائمة يمكن أن تساعد الجلسات القادمة.',
       'memory.userProfileEnabled': 'يحافظ على ملف مختصر لتفضيلات المستخدم.',
+      'memory.prefetchIncludeLastAgentMessage':
+        'عند التفعيل، يُضاف رد النموذج الأخير إلى استعلام استرجاع الذاكرة، حتى تلتقط المتابعات القصيرة مثل «نفّذ ذلك» ذكريات ذات صلة. معطل افتراضيًا.',
       'context.engine': 'استراتيجية إدارة المحادثات الطويلة قرب حد السياق.',
       'compression.enabled': 'يلخص السياق الأقدم عندما تكبر المحادثات.',
       'compression.codexGpt55Autoraise': 'يرفع عتبة الضغط إلى 85٪ لنماذج ChatGPT Codex OAuth المدعومة.',

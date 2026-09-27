@@ -1398,7 +1398,8 @@ export const deOverrides = {
         userProfileEnabled: 'Benutzerprofil',
         memoryCharLimit: 'Gedächtnis-Budget',
         userCharLimit: 'Profil-Budget',
-        provider: 'Gedächtnis-Anbieter'
+        provider: 'Gedächtnis-Anbieter',
+        prefetchIncludeLastAgentMessage: 'Vorherige Antwort in Gedächtnissuche einbeziehen'
       },
       context: {
         engine: 'Kontext-Engine'
@@ -1474,7 +1475,9 @@ export const deOverrides = {
       },
       memory: {
         memoryEnabled: 'Dauerhafte Erinnerungen speichern, die zukünftigen Sessions helfen können.',
-        userProfileEnabled: 'Ein kompaktes Profil der Benutzerpräferenzen pflegen.'
+        userProfileEnabled: 'Ein kompaktes Profil der Benutzerpräferenzen pflegen.',
+        prefetchIncludeLastAgentMessage:
+          'Wenn aktiviert, wird die letzte Antwort des Modells zur Gedächtnis-Abfrage hinzugefügt, damit kurze Anschlussfragen wie "das implementiere" relevante Erinnerungen finden. Standardmäßig aus.'
       },
       context: {
         engine: 'Strategie zur Verwaltung langer Gespräche nahe der Kontextgrenze.'

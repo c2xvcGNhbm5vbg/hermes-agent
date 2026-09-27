@@ -1399,7 +1399,8 @@ export const frOverrides = {
         userProfileEnabled: 'Profil utilisateur',
         memoryCharLimit: 'Budget mémoire',
         userCharLimit: 'Budget profil',
-        provider: 'Fournisseur de mémoire'
+        provider: 'Fournisseur de mémoire',
+        prefetchIncludeLastAgentMessage: 'Inclure la dernière réponse dans la recherche mémoire'
       },
       context: {
         engine: 'Moteur de contexte'
@@ -1476,7 +1477,9 @@ export const frOverrides = {
       },
       memory: {
         memoryEnabled: 'Sauvegarder des mémoires durables pouvant aider les sessions futures.',
-        userProfileEnabled: 'Maintenir un profil compact des préférences utilisateur.'
+        userProfileEnabled: 'Maintenir un profil compact des préférences utilisateur.',
+        prefetchIncludeLastAgentMessage:
+          "Quand activé, la dernière réponse du modèle est ajoutée à la requête de recherche mémoire, pour que les suites courtes comme \"implémente ça\" trouvent des mémoires pertinentes. Désactivé par défaut."
       },
       context: {
         engine: 'Stratégie pour gérer les longues conversations proches de la limite de contexte.'

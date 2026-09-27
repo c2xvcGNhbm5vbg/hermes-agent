@@ -1110,7 +1110,8 @@ export const zh = defineLocale({
         userProfileEnabled: '用户画像',
         memoryCharLimit: '记忆预算',
         userCharLimit: '画像预算',
-        provider: '记忆提供方'
+        provider: '记忆提供方',
+        prefetchIncludeLastAgentMessage: '将上一条回复纳入记忆搜索'
       },
       context: {
         engine: '上下文引擎'
@@ -1182,7 +1183,9 @@ export const zh = defineLocale({
       },
       memory: {
         memoryEnabled: '保存有助于未来会话的持久记忆。',
-        userProfileEnabled: '维护一份精简的用户偏好画像。'
+        userProfileEnabled: '维护一份精简的用户偏好画像。',
+        prefetchIncludeLastAgentMessage:
+          '开启后，模型的上一次回复会被加入记忆检索查询，使“实现那个”等简短后续问题也能找到相关记忆。默认关闭。'
       },
       context: {
         engine: '在接近上下文上限时管理长对话的策略。'
