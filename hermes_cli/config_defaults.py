@@ -1300,6 +1300,9 @@ DEFAULT_CONFIG = {
         # External memory provider plugin (empty = built-in only); only ONE at a time: "openviking",
         # "mem0", "holographic", "retaindb", "byterover", or a catalog-installed one ("hindsight").
         "provider": "",
+        # When true, the last assistant reply (bounded to 500 chars) is appended to the per-turn
+        # memory prefetch query, so short anaphoric follow-ups retrieve relevant memory. Off by default.
+        "prefetch_include_last_agent_message": False,
     },
     # Subagent delegation — override the provider:model used by delegate_task so children run on a
     # cheaper/faster model. Uses the same runtime provider resolution as CLI/gateway startup, so

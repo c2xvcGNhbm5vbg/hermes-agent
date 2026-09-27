@@ -850,8 +850,27 @@ def _memory_query_text(original_user_message: Any) -> str:
     return ""
 
 
+def _bounded_text(text: str, limit: int) -> str:
+    """Flatten whitespace; when longer than ``limit`` keep ``limit - 1`` chars and append ``…``."""
+    _flat = " ".join(str(text).split())
+    if len(_flat) > limit:
+        return _flat[: limit - 1] + "…"
+    return _flat
+
+
+def _prefetch_include_last_agent_message() -> bool:
+    """``memory.prefetch_include_last_agent_message`` (opt-in, default off)."""
+    try:
+        from hermes_cli.config import DEFAULT_CONFIG, cfg_get
+
+        return bool(cfg_get(DEFAULT_CONFIG, "memory", "prefetch_include_last_agent_message", default=False))
+    except ImportError:
+        return False
+
+
 def _memory_turn_start_and_prefetch(
     agent: Any, original_user_message: Any, turn_author: Optional[Dict[str, Any]] = None,
+    last_assistant_message: Optional[str] = None,
 ) -> str:
     """Notify memory providers of the new turn, then prefetch external memory once
     before the tool loop (skipped on trivial prompts with no semantic signal).
@@ -859,6 +878,10 @@ def _memory_turn_start_and_prefetch(
     if not agent._memory_manager:
         return ""
     _query = _memory_query_text(original_user_message)
+    if last_assistant_message and _prefetch_include_last_agent_message():
+        _extra = _bounded_text(last_assistant_message, 500)
+        if _extra:
+            _query = f"{_query}\n{_extra}" if _query else _extra
     # The author rides along so a provider can attribute THIS turn, not whoever opened the session.
     _author = turn_author if isinstance(turn_author, dict) else {}
     with suppress(Exception):
@@ -1129,7 +1152,11 @@ def build_turn_context(
     )
 
     _bind_interrupt_scope(agent, ra)
-    ext_prefetch_cache = _memory_turn_start_and_prefetch(agent, original_user_message, turn_author)
+    last_assistant = next(
+        (m.get("content") for m in reversed(messages) if isinstance(m, dict) and m.get("role") == "assistant" and m.get("content")),
+        None,
+    )
+    ext_prefetch_cache = _memory_turn_start_and_prefetch(agent, original_user_message, turn_author, last_assistant_message=last_assistant)
 
     # Title the session now: titling depends only on the user's ask (before any injected
     # context lands on list content), so it runs concurrently with the turn. Daemon thread,
