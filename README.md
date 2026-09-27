@@ -20,6 +20,16 @@
 
 Use any model you want — [Nous Portal](https://portal.nousresearch.com), OpenRouter, OpenAI, your own endpoint, and [many others](https://hermes-agent.nousresearch.com/docs/integrations/providers). Switch with `hermes model` — no code changes, no lock-in.
 
+## What this fork adds
+
+This is a community fork (`c2xvcGNhbm5vbg/hermes-agent`) of [NousResearch/hermes-agent](https://github.com/NousResearch/hermes-agent). It carries a few fixes on top of upstream, so a fresh install from this fork picks them up. It is kept in sync with upstream by `hermes update` (origin = this fork, upstream = NousResearch).
+
+- **Config partial-save fix** — a long-lived process (gateway/serve) no longer lets a stale in-memory schema default clobber a value the user set on disk (e.g. `memory.provider`) on the process's next partial save. Previously a key set on disk could be silently reverted by a process that never saw it.
+- **`/refine` on live Desktop/TUI sessions** — `/refine` now runs on the live Desktop/TUI session (replaying the persisted transcript, falling back to the in-memory history, and spawning the background review on the live agent) instead of the detached slash worker. Fixes #93918, #83455 (ported from upstream PR #109934, not yet merged upstream).
+
+> **Installing from this fork:** `curl -fsSL https://hermes-agent.nousresearch.com/install.sh | HERMES_REPO_URL=https://github.com/c2xvcGNhbm5vbg/hermes-agent.git bash`
+
+
 <table>
 <tr><td><b>A real terminal interface</b></td><td>Full TUI with multiline editing, slash-command autocomplete, conversation history, interrupt-and-redirect, and streaming tool output.</td></tr>
 <tr><td><b>Lives where you do</b></td><td>Telegram, Discord, Slack, WhatsApp, Signal, and CLI — all from a single gateway process. Voice memo transcription, cross-platform conversation continuity.</td></tr>
