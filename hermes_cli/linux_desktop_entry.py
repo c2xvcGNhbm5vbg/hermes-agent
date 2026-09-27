@@ -171,6 +171,34 @@ def _inside_checkout(candidate: str, checkout_root: Path, original_argv0: str) -
         return False
 
 
+def _is_managed_venv_shim(candidate: str) -> bool:
+    """Whether *candidate* is a managed-install venv console script.
+
+    The install.sh layout ships a managed venv generation under
+    ``<hermes_home>/installs/<hash>/environments/<hash>/venv``; its ``bin/hermes`` is a
+    per-generation build artifact whose ``workspace`` has NO ``apps/`` tree, so it can never
+    build or launch the GUI — it is a launch-context artifact, not a durable launcher. The
+    ``installs`` + ``environments`` + ``venv`` triple (anchored under the Hermes home) is the
+    signature; a user's own venv (``~/.venvs/...``) or a genuine external install
+    (``/opt/...``) does not match.
+    """
+    try:
+        parts = Path(candidate).parts
+    except (OSError, TypeError):
+        return False
+    if not ("installs" in parts and "environments" in parts and "venv" in parts):
+        return False
+    try:
+        from hermes_constants import get_hermes_home
+
+        home = get_hermes_home()
+        if home is not None and home not in Path(candidate).parents:
+            return False
+    except Exception:
+        pass
+    return True
+
+
 def _resolve_hermes_bin_for_desktop_entry(
     resolve_fn=None,
     checkout_root: Optional[Path] = None,
@@ -202,7 +230,11 @@ def _resolve_hermes_bin_for_desktop_entry(
     # installation. Only rerun the resolver with argv[0] hidden when the primary could actually
     # be checkout-internal (also shortens the window a concurrent reader sees mutated sys.argv).
     primary = resolve_fn()
-    if primary and not _inside_checkout(primary, checkout_root, original_argv0):
+    if (
+        primary
+        and not _inside_checkout(primary, checkout_root, original_argv0)
+        and not _is_managed_venv_shim(primary)
+    ):
         return primary
 
     # A primary that is NOT checkout-internal and not the invoking interpreter is an external launcher (e.g.
@@ -224,8 +256,11 @@ def _resolve_hermes_bin_for_desktop_entry(
     # gnome-shell 50.x crashes when hermes.desktop changes while its ShellApp is STARTING (#110885).
     # ``primary is None`` implies ``rerouted is None`` (the rerun only hides argv[0]), so only the
     # probe can still find anything.
-    if primary and rerouted is not None and not _inside_checkout(
-        rerouted, checkout_root, original_argv0
+    if (
+        primary
+        and rerouted is not None
+        and not _inside_checkout(rerouted, checkout_root, original_argv0)
+        and not _is_managed_venv_shim(rerouted)
     ):
         return rerouted
     # A PATH hit inside this checkout is the same launch-context artifact as argv[0]: the

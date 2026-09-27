@@ -1399,6 +1399,38 @@ def _site_packages_install_kind(project_root: Path) -> Optional[str]:
     return None
 
 
+def _is_managed_venv_generation(project_root: Path) -> bool:
+    """Whether *project_root* is a managed-install venv generation workspace.
+
+    The install.sh layout ships a git checkout AND a managed venv generation under
+    ``<hermes_home>/installs/<hash>/environments/<hash>/``. The generation's
+    ``workspace`` is a Python build snapshot (setuptools package roots + top-level
+    ``*.py``/metadata only) with NO ``apps/`` tree, so ``hermes desktop`` from it can
+    never build or launch the GUI. The ``installs`` + ``environments`` path signature
+    plus a sibling ``venv`` directory is the marker; a real checkout (no such layout)
+    never matches.
+    """
+    p = Path(project_root)
+    if "installs" not in p.parts or "environments" not in p.parts:
+        return False
+    return (p.parent / "venv").is_dir()
+
+
+def _find_installed_desktop_app() -> Optional[Path]:
+    """The packaged Electron app from the source checkout, if built.
+
+    The install.sh checkout ships ``apps/desktop/release/linux-unpacked/Hermes`` (the
+    packaged app) — launchable even when the venv generation's ``workspace`` has no
+    ``apps/`` tree. Returns the executable path, or None when not built.
+    """
+    from hermes_cli.main import PROJECT_ROOT
+
+    candidate = PROJECT_ROOT / "apps" / "desktop" / "release" / "linux-unpacked" / "Hermes"
+    if candidate.is_file():
+        return candidate
+    return None
+
+
 def _launch_installed_macos_desktop_app() -> bool:
     """Launch a separately installed ``/Applications/Hermes.app``, if present.
 
@@ -1445,6 +1477,25 @@ def cmd_gui(args: argparse.Namespace):
                 "  Install the desktop app from https://hermes-agent.nousresearch.com,\n"
                 "  or run `hermes desktop` from a source checkout."
             )
+        elif _is_managed_venv_generation(PROJECT_ROOT):
+            # A managed-venv generation's workspace is a Python build snapshot with no
+            # apps/ tree — the same "no source" shape as a package install, but the
+            # install ALSO ships a git checkout (and the packaged app) that CAN launch.
+            # Point the user there instead of the bare missing-source error.
+            print(
+                "  This Hermes is a managed-venv generation, which does not ship the\n"
+                "  desktop app's source tree, so it cannot be built from here.\n"
+                "  Launch the installed desktop app, or run `hermes desktop` from your\n"
+                "  source checkout (the install that has apps/desktop/)."
+            )
+            installed = _find_installed_desktop_app()
+            if installed:
+                print(f"  Found installed app: {installed}")
+                from hermes_cli.bundled_app import launch_detached
+
+                pid = launch_detached([str(installed)], cwd=installed.parent)
+                print(f"→ Launched the installed Hermes Desktop app (pid {pid})")
+                sys.exit(0)
         sys.exit(1)
 
     with contextlib.suppress(Exception):
