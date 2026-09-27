@@ -26,6 +26,7 @@ This is a community fork (`c2xvcGNhbm5vbg/hermes-agent`) of [NousResearch/hermes
 
 - **Config partial-save fix** — a long-lived process (gateway/serve) no longer lets a stale in-memory schema default clobber a value the user set on disk (e.g. `memory.provider`) on the process's next partial save. Previously a key set on disk could be silently reverted by a process that never saw it.
 - **`/refine` on live Desktop/TUI sessions** — `/refine` now runs on the live Desktop/TUI session (replaying the persisted transcript, falling back to the in-memory history, and spawning the background review on the live agent) instead of the detached slash worker. Fixes #93918, #83455 (ported from upstream PR #109934, not yet merged upstream).
+- **Configurable memory-prefetch query** — `memory.prefetch_include_last_agent_message` (default off): when on, the last agent reply (bounded to 500 chars) is appended to the per-turn memory recall query, so anaphoric follow-ups like "implement that plan" retrieve relevant memory. Provider-agnostic; toggle in Desktop → Settings → Memory.
 
 > **Installing from this fork:** `curl -fsSL https://hermes-agent.nousresearch.com/install.sh | HERMES_REPO_URL=https://github.com/c2xvcGNhbm5vbg/hermes-agent.git bash`
 
